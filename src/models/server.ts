@@ -1,14 +1,11 @@
 import config from "../config/config";
-import { dbConncetionSql, dbConnection } from "../DB/config";
 import express, { Application } from "express";
 import cors from "cors";
 import morgan from "morgan";
 import "colors";
-import i18n from "../config/i18n";
-import fileUpload from 'express-fileupload';
 
 //routes
-import exampleRoutes from "../routes/example";
+import skinnyCowsRoutes from "../routes/skinnyCows";
 
 class Server {
   private app: Application;
@@ -19,12 +16,8 @@ class Server {
     this.app = express();
     this.port = config.port;
     this.path = {
-      // exmple
-      example: "/api/example",
+      skinnyCows: "/api/skinnyCows",
     };
-
-    // Conectar a bd
-    this.conectarDB();
     // Middlwares
     this.middlewares();
     // Mis rutas
@@ -32,12 +25,6 @@ class Server {
 
     // cors proteger nuestra api para que solo reciba peticiones de cierto lugar
     // listas blancas y listas negras
-  }
-
-  async conectarDB() {
-    // concection of bd
-    await dbConnection();
-    await dbConncetionSql();
   }
 
   middlewares() {
@@ -49,21 +36,10 @@ class Server {
     this.app.use(express.json());
     // responses
     this.app.use(morgan("dev"));
-    // subir archivos
-    this.app.use(
-      fileUpload({
-        useTempFiles: true,
-        tempFileDir: "/tmp/",
-        createParentPath: true,
-      })
-    );
-    // translator handler 
-    this.app.use(i18n.init);
   }
 
   routes() {
-    // example
-    this.app.use(this.path.example, exampleRoutes);
+    this.app.use(this.path.skinnyCows, skinnyCowsRoutes);
   }
 
   listen() {
